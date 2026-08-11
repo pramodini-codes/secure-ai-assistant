@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure AI Assistant Lab (Gemini)</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; background: #f4f4f9; }
+        #chat-box { width: 600px; height: 400px; background: white; border: 1px solid #ccc; padding: 20px; overflow-y: scroll; margin-bottom: 20px; border-radius: 5px; }
+        input[type="text"] { width: 480px; padding: 10px; }
+        button { padding: 10px 20px; }
+        .user { color: blue; margin: 5px 0; }
+        .bot { color: green; margin: 5px 0; }
+        .blocked { color: red; margin: 5px 0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Secure AI Assistant Workshop (Gemini Free Tier)</h2>
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Ask about laptops or try an injection..." autofocus>
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById("user-input");
+            const chatBox = document.getElementById("chat-box");
+            const message = inputField.value;
+            if (!message) return;
+
+            chatBox.innerHTML += `<div class="user"><b>You:</b> ${message}</div>`;
+            inputField.value = "";
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            const data = await response.json();
+
+            if (data.status === "blocked") {
+                chatBox.innerHTML += `<div class="blocked"><b>[Blocked]:</b> ${data.response}</div>`;
+            } else {
+                chatBox.innerHTML += `<div class="bot"><b>Assistant:</b> ${data.response}</div>`;
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Also allow pressing Enter to send
+        document.getElementById("user-input").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") sendMessage();
+        });
+    </script>
+</body>
+</html>
