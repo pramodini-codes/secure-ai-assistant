@@ -1,4 +1,4 @@
-# Week 5 — Secure AI Assistant Lab (Gemini)
+#  Secure AI Assistant (Gemini)
 
 ## Objective
 
